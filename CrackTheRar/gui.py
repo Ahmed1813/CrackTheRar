@@ -4,7 +4,7 @@ import os
 from customtkinter import *
 from CTkMessagebox import CTkMessagebox
 
-from crack import dictionary_attack, bruteforce_start
+from .crack import bruteforce, dictionary_attack
 
 set_appearance_mode("system")
 set_default_color_theme("blue")
@@ -108,7 +108,7 @@ class CrackTheRar(CTk):
 
     def create_start_button(self):
         self.start_button = CTkButton(master=self, text="START",
-                                      font=DEFAULT_LARGE_BUTTON_FONT, width=200, height=45, command=self.start_buttom_method)
+                                      font=DEFAULT_LARGE_BUTTON_FONT, width=200, height=45, command=self.start_button_method)
         self.start_button.grid(row=4, column=0, columnspan=2,  padx=(80, 80),
                                pady=(16, 24))
 
@@ -209,7 +209,7 @@ class CrackTheRar(CTk):
         CTkMessagebox(master=self, title="Password Not Found",
                       message=f"No Correct Password Found", icon="cancel", header=True)
 
-    def start_buttom_method(self):
+    def start_button_method(self):
         filename = self.select_file_entry.get()
         output_path = self.output_path_entry.get()
 
@@ -240,8 +240,8 @@ class CrackTheRar(CTk):
                 return
 
             self.toggle_start_button_state()
-            password = bruteforce_start(file_path=filename, password_set=password_set,
-                                        output_path=output_path, password_length=password_length)
+            password = bruteforce(file_path=filename, password_set=password_set,
+                                  output_path=output_path, password_length=password_length)
             if password:
                 self.password_found_box(password)
             else:

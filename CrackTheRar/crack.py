@@ -28,7 +28,7 @@ def extract_rarfile(file_path, password, output_path=None):
     return False
 
 
-def bruteforce_start(file_path, password_set, password_length, extract_method, output_path=None):
+def bruteforce_start(file_path, password_set, password_length, output_path, extract_method):
     for length in range(1, password_length+1):
         passwords = itertools.product(password_set, repeat=length)
         for password in passwords:
@@ -45,9 +45,9 @@ def bruteforce(file_path, password_set, password_length, output_path=None):
             output_path = output_folder
 
         if file_path.endswith(".zip"):
-            return bruteforce_start(file_path, password_set, password_length, extract_method=extract_zipfile, output_path=output_path)
+            return bruteforce_start(file_path, password_set, password_length, output_path, extract_method=extract_zipfile)
         elif file_path.endswith(".rar"):
-            return bruteforce_start(file_path, password_set, password_length, extract_method=extract_rarfile, output_path=output_path)
+            return bruteforce_start(file_path, password_set, password_length, output_path, extract_method=extract_rarfile)
 
 
 def dictionary_attack(file_path, password_file, output_path=None):

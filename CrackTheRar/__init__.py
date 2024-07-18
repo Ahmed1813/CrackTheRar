@@ -1,1 +1,1 @@
-from gui import CrackTheRar
+from .gui import CrackTheRar
