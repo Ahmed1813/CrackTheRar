@@ -1,5 +1,6 @@
 import string
 import os
+from threading import Thread
 
 from customtkinter import *
 from CTkMessagebox import CTkMessagebox
@@ -223,15 +224,10 @@ class CrackTheRar(CTk):
             if not self.validate_password_file():
                 return
 
-            self.toggle_start_button_state()
-            password_file = self.password_file_entry.get()
-            password = dictionary_attack(password_file=password_file,
-                                         file_path=filename, output_path=output_path)
-            if password:
-                self.password_found_box(password)
-            else:
-                self.password_not_found_box()
-            self.toggle_start_button_state()
+            thread = Thread(target=self.dictionary_thread,
+                            args=(filename, output_path))
+            thread.daemon = True
+            thread.start()
 
         elif self.tabview.get() == "Bruteforce":
             password_set = self.make_password()
@@ -239,11 +235,28 @@ class CrackTheRar(CTk):
             if not password_set:
                 return
 
-            self.toggle_start_button_state()
-            password = bruteforce(file_path=filename, password_set=password_set,
-                                  output_path=output_path, password_length=password_length)
-            if password:
-                self.password_found_box(password)
-            else:
-                self.password_not_found_box()
-            self.toggle_start_button_state()
+            thread = Thread(target=self.bruteforce_thread, args=(
+                filename, output_path, password_set, password_length))
+            thread.daemon = True
+            thread.start()
+
+    def bruteforce_thread(self, filename, output_path, password_set, password_length):
+        self.toggle_start_button_state()
+        password = bruteforce(file_path=filename, password_set=password_set,
+                              output_path=output_path, password_length=password_length)
+        if password:
+            self.password_found_box(password)
+        else:
+            self.password_not_found_box()
+        self.toggle_start_button_state()
+
+    def dictionary_thread(self, filename, output_path):
+        self.toggle_start_button_state()
+        password_file = self.password_file_entry.get()
+        password = dictionary_attack(password_file=password_file,
+                                     file_path=filename, output_path=output_path)
+        if password:
+            self.password_found_box(password)
+        else:
+            self.password_not_found_box()
+        self.toggle_start_button_state()
