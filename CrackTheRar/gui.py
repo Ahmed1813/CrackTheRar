@@ -2,6 +2,7 @@ import string
 import os
 import rarfile
 from threading import Thread
+from pathlib import Path
 
 from customtkinter import *
 from CTkMessagebox import CTkMessagebox
@@ -24,6 +25,10 @@ class CrackTheRar(CTk):
         self.title("Crack The Rar")
         self.geometry("700x500")
         self.resizable(False, False)
+
+        # Configuring Icon for the app
+        icon = Path(__file__).parent / "icons/icon-512.ico"
+        self.iconbitmap(icon)
 
         # Configuring Grid for Main App
         self.grid_columnconfigure((0, 1), weight=1)
