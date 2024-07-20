@@ -1,5 +1,6 @@
 import string
 import os
+import rarfile
 from threading import Thread
 
 from customtkinter import *
@@ -251,12 +252,17 @@ class CrackTheRar(CTk):
         self.toggle_start_button_state()
 
     def dictionary_thread(self, filename, output_path):
-        self.toggle_start_button_state()
-        password_file = self.password_file_entry.get()
-        password = dictionary_attack(password_file=password_file,
-                                     file_path=filename, output_path=output_path)
-        if password:
-            self.password_found_box(password)
-        else:
-            self.password_not_found_box()
-        self.toggle_start_button_state()
+        try:
+            self.toggle_start_button_state()
+            password_file = self.password_file_entry.get()
+            password = dictionary_attack(password_file=password_file,
+                                         file_path=filename, output_path=output_path)
+            if password:
+                self.password_found_box(password)
+            else:
+                self.password_not_found_box()
+        except rarfile.RarExecError:
+            CTkMessagebox(self, header=True, title="Unrar Error",
+                          message="Please add UnRar to path or in this folder.", icon="cancel")
+        finally:
+            self.toggle_start_button_state()
